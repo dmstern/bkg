@@ -118,22 +118,14 @@
 
   <script>
     const root = document.querySelector(":root");
-    const style = getComputedStyle(root);
-
-    let colors = {
-      b: style.getPropertyValue("--color-b"),
-      k: style.getPropertyValue("--color-k"),
-      g: style.getPropertyValue("--color-g"),
-    };
-
     const colorPickers = document.getElementsByName("color");
+
     colorPickers.forEach((picker) => {
-      const { letter } = picker.dataset;
-      picker.value = colors[letter];
+      const property = `--color-${picker.dataset.letter}`;
+      picker.value = getComputedStyle(root).getPropertyValue(property);
 
       picker.addEventListener("change", (event) => {
-        const { value } = event.target;
-        root.style.setProperty(`--color-${letter}`, value);
+        root.style.setProperty(property, event.target.value);
       });
     });
     
