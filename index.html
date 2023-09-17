@@ -420,6 +420,12 @@
   </main>
 
   <script>
+    const root = document.querySelector(":root");
+
+    /**************
+     * Functions
+     * ************/
+
     function init() {
       const params = getParams();
 
@@ -454,11 +460,10 @@
     }
 
     function putLetterToFront(letter) {
-      const displayLetterProperty = `--display-${letter}`;
       root.style.setProperty("--display-b", "none");
       root.style.setProperty("--display-k", "none");
       root.style.setProperty("--display-g", "none");
-      root.style.setProperty(displayLetterProperty, "block");
+      root.style.setProperty(`--display-${letter}`, "block");
     }
 
     function setLetterColor(letter, color) {
@@ -468,10 +473,12 @@
     function setOpacity(opacity) {
       root.style.setProperty("--letter-opacity", opacity);
     }
-
-    const root = document.querySelector(":root");
+    
+    /***************
+     * Controls
+     **************/
+    
     const colorPickers = document.getElementsByName("color");
-
     colorPickers.forEach((picker) => {
       picker.value = getComputedStyle(root).getPropertyValue(getColorProperty(picker.dataset.letter));
 
@@ -493,6 +500,19 @@
       });
     });
 
+    document.getElementById("opacity-slider").addEventListener("input", (event) => {
+      const value = event.target.value / 100;
+      setOpacity(value);
+
+      setParams((params) => {
+        params.opacity = value;
+      });
+    });
+
+    /************
+     * Buttons
+     ***********/
+
     document.getElementById("print-button").addEventListener("click", () => {
       window.print();
     });
@@ -505,15 +525,6 @@
     document.getElementById("reset-button").addEventListener("click", () => {
       location.hash = "";
       location.href = location.href;
-    });
-
-    document.getElementById("opacity-slider").addEventListener("input", (event) => {
-      const value = event.target.value / 100;
-      setOpacity(value);
-
-      setParams((params) => {
-        params.opacity = value;
-      });
     });
 
     init();
