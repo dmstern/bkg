@@ -385,7 +385,7 @@
                 stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
           </label>
-          <input type="range" name="opacity-slider" id="opacity-slider" min="0" max="10" orient="vertical" value="9">
+          <input type="range" name="opacity-slider" id="opacity-slider" min="0" max="100" orient="vertical" value="90">
         </div>
       </div>
       <button class="print-button" id="print-button"><svg aria-hidden="true" fill="none" stroke="currentColor"
@@ -427,8 +427,9 @@
       window.print();
     });
 
-    document.getElementById("opacity-slider").addEventListener("change", (event) => {
-      root.style.setProperty("--letter-opacity", event.target.value / 10);
+    document.getElementById("opacity-slider").addEventListener("input", (event) => {
+      console.log(event);
+      root.style.setProperty("--letter-opacity", event.target.value / 100);
     });
 
   </script>
