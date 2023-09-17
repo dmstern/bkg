@@ -106,25 +106,30 @@
     }
 
     .button {
-      margin: 1rem 0;
       padding: .5em;
-      background-color: transparent;
-      border-radius: 6px;
-      border: 2px solid var(--button-highlight);
-      font-weight: bold;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: sans-serif;
       text-decoration: none;
       color: inherit;
-      font-size: .9rem;
+      background-color: var(--button-base);
+      font-family: inherit;
+      font-size: inherit;
+      margin: 1rem 0 1rem 0;
+      border: none;
+      border-radius: 6px;
+      outline: none;
     }
 
-    .button:hover,
-    .button:active {
-      color: white;
-      background-color: var(--button-highlight);
+    @media (prefers-color-scheme: dark) {
+      .button {
+        transition: background-color 0.1s linear, border-color 0.1s linear, color 0.1s linear, box-shadow 0.1s linear, transform 0.1s ease;
+        transition: background-color var(--animation-duration) linear, border-color var(--animation-duration) linear, color var(--animation-duration) linear, box-shadow var(--animation-duration) linear, transform var(--animation-duration) ease;
+      }
+    }
+
+    .button+.button {
+      margin-top: 0;
     }
 
     .main-wrapper {
@@ -181,8 +186,9 @@
   <main>
     <div class="editor">
       <h1 class="heading">BKG Logo <span class="heading__addon">- Editor</span></h1>
-      <a class="button button--reset" id="reset-button" href="index.html">
-        <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <a class="button button--reset" id="reset-button" href="index.html" role="button">
+        <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
           <path d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
         <span>Zurücksetzen</span>
@@ -477,11 +483,11 @@
     function setOpacity(opacity) {
       root.style.setProperty("--letter-opacity", opacity);
     }
-    
+
     /***************
      * Controls
      **************/
-    
+
     const colorPickers = document.getElementsByName("color");
     colorPickers.forEach((picker) => {
       picker.value = getComputedStyle(root).getPropertyValue(getColorProperty(picker.dataset.letter));
