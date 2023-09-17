@@ -73,6 +73,10 @@
       display: none;
     }
 
+    .logo--clone {
+      display: none !important;
+    }
+
     [data-letter-top=b] .logo--b {
       display: block;
     }
@@ -492,6 +496,10 @@
     document.getElementById("download-button").addEventListener("mousedown", (event) => {
       const letterTop = root.dataset.letterTop;
       const svg = document.querySelector(`.logo--${letterTop}`);
+      const svgClone = svg.cloneNode(true);
+
+      document.body.appendChild(svgClone)
+
       const style = getComputedStyle(root);
 
       const properties = [
@@ -501,12 +509,15 @@
         "--letter-opacity"
       ];
 
+      svgClone.classList.add("logo--clone");
       properties.forEach(prop => {
-        svg.style.setProperty(prop, style.getPropertyValue(prop));
+        svgClone.style.setProperty(prop, style.getPropertyValue(prop));
       });
 
-      const svgMarkup = svg.outerHTML;
+      const svgMarkup = svgClone.outerHTML;
       event.target.href = `data:image/svg+xml;base64,${btoa(svgMarkup)}`;
+
+      document.querySelector(".logo--clone").remove();
     });
 
     init();
