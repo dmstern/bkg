@@ -101,7 +101,7 @@
       padding: 5px;
     }
 
-    button {
+    .button {
       margin: 1rem 0;
       padding: .5em;
       background-color: transparent;
@@ -111,10 +111,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      font-family: sans-serif;
+      text-decoration: none;
+      color: inherit;
+      font-size: .9rem;
     }
 
-    button:hover,
-    button:active {
+    .button:hover,
+    .button:active {
       color: white;
       background-color: var(--button-highlight);
     }
@@ -133,7 +137,7 @@
       flex-direction: column;
     }
 
-    button svg {
+    .button svg {
       width: 1.2em;
       height: auto;
       margin-right: .5em;
@@ -173,6 +177,12 @@
   <h1 class="heading">BKG Logo <span class="heading__addon">- Editor</span></h1>
   <main>
     <div class="editor">
+      <a class="button button--reset" id="reset-button" href="index.html">
+        <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Zurücksetzen</span>
+      </a>
       <div class="letter-editor">
         <div class="letter-editor__item">
           <div class="letter-editor__control">
@@ -391,13 +401,13 @@
           <input type="range" name="opacity-slider" id="opacity-slider" min="0" max="100" orient="vertical" value="90">
         </div>
       </div>
-      <button class="print-button" id="print-button"><svg aria-hidden="true" fill="none" stroke="currentColor"
+      <button class="button button--print" id="print-button"><svg aria-hidden="true" fill="none" stroke="currentColor"
           stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
             stroke-linecap="round" stroke-linejoin="round"></path>
         </svg><span>Als PDF Herunterladen <br>(als Drucker "PDF" oder "in Datei drucken" auswählen)</span></button>
-      <button class="share-button" id="share-button">
+      <button class="button button--share" id="share-button">
         <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg">
           <path
@@ -410,6 +420,24 @@
   </main>
 
   <script>
+    function init() {
+      const params = getParams();
+
+      Object.entries(params).filter(([key, value]) => key.startsWith("color-")).forEach(([key, value]) => {
+        const letter = key.split("-")[1];
+        setLetterColor(letter, value);
+        document.querySelector(`input[name="color"][data-letter="${letter}"]`).value = value;
+      });
+
+      if (params.letterFront) {
+        putLetterToFront(params.letterFront)
+      }
+
+      if (params.opacity) {
+        setOpacity(params.opacity);
+      }
+    }
+
     function getParams() {
       const hash = decodeURI(location.hash.substring(1));
       return hash ? JSON.parse(hash) : {};
@@ -468,10 +496,15 @@
     document.getElementById("print-button").addEventListener("click", () => {
       window.print();
     });
-    
+
     document.getElementById("share-button").addEventListener("click", () => {
       navigator.clipboard.writeText(location.href);
       window.alert("URL in Zwischenablage kopiert. Du kannst sie jetzt jemandem schicken.");
+    });
+
+    document.getElementById("reset-button").addEventListener("click", () => {
+      location.hash = "";
+      location.href = location.href;
     });
 
     document.getElementById("opacity-slider").addEventListener("input", (event) => {
@@ -483,27 +516,7 @@
       });
     });
 
-    (() => {
-      const params = getParams();
-
-      if (!params) {
-        return;
-      }
-
-      Object.entries(params).filter(([key, value]) => key.startsWith("color-")).forEach(([key, value]) => {
-        const letter = key.split("-")[1];
-        setLetterColor(letter, value);
-        document.querySelector(`input[name="color"][data-letter="${letter}"]`).value = value;
-      });
-
-      if (params.letterFront) {
-        putLetterToFront(params.letterFront)
-      }
-
-      if (params.opacity) {
-        setOpacity(params.opacity);
-      }
-    })();
+    init();
 
   </script>
 </body>
