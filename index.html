@@ -86,18 +86,19 @@
     .logo {
       width: 100%;
       height: auto;
+      display: none;
     }
 
-    .logo--b {
-      display: var(--display-b);
+    [data-letter-top=b] .logo--b {
+      display: block;
     }
 
-    .logo--k {
-      display: var(--display-k);
+    [data-letter-top=k] .logo--k {
+      display: block;
     }
 
-    .logo--g {
-      display: var(--display-g);
+    [data-letter-top=g] .logo--g {
+      display: block;
     }
 
     input[type="radio"] {
@@ -447,6 +448,8 @@
 
       if (params.letterFront) {
         putLetterToFront(params.letterFront)
+      } else {
+        putLetterToFront("b");
       }
 
       if (params.opacity) {
@@ -470,10 +473,7 @@
     }
 
     function putLetterToFront(letter) {
-      root.style.setProperty("--display-b", "none");
-      root.style.setProperty("--display-k", "none");
-      root.style.setProperty("--display-g", "none");
-      root.style.setProperty(`--display-${letter}`, "block");
+      root.dataset.letterTop = letter;
     }
 
     function setLetterColor(letter, color) {
