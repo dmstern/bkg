@@ -398,28 +398,58 @@
   </main>
 
   <script>
+    function getParams() {
+      const hash = decodeURI(location.hash.substring(1));
+      return hash ? JSON.parse(hash) : {};
+    }
+
+    function getColorProperty(letter) {
+      return `--color-${letter}`;
+    }
+
+    function setParams(callback) {
+      const params = getParams();
+      callback(params);
+      location.hash = encodeURI(JSON.stringify(params))
+    }
+
+    function putLetterToFront(letter) {
+      const displayLetterProperty = `--display-${letter}`;
+      root.style.setProperty("--display-b", "none");
+      root.style.setProperty("--display-k", "none");
+      root.style.setProperty("--display-g", "none");
+      root.style.setProperty(displayLetterProperty, "block");
+    }
+
+    function setLetterColor(letter, color) {
+      root.style.setProperty(getColorProperty(letter), color);
+    }
+
+    function setOpacity(opacity) {
+      root.style.setProperty("--letter-opacity", opacity);
+    }
+
     const root = document.querySelector(":root");
     const colorPickers = document.getElementsByName("color");
 
     colorPickers.forEach((picker) => {
-      const property = `--color-${picker.dataset.letter}`;
-      picker.value = getComputedStyle(root).getPropertyValue(property);
+      picker.value = getComputedStyle(root).getPropertyValue(getColorProperty(picker.dataset.letter));
 
       picker.addEventListener("change", (event) => {
-        root.style.setProperty(property, event.target.value);
+        setLetterColor(picker.dataset.letter, event.target.value);
+        setParams((params) => {
+          params[`color-${picker.dataset.letter}`] = event.target.value;
+        });
       });
     });
 
     const topPickers = document.getElementsByName("top");
     topPickers.forEach((picker) => {
       picker.addEventListener("change", (event) => {
-        const displayLetterProperty = `--display-${picker.dataset.letter}`;
-
-        root.style.setProperty("--display-b", "none");
-        root.style.setProperty("--display-k", "none");
-        root.style.setProperty("--display-g", "none");
-
-        root.style.setProperty(displayLetterProperty, "block");
+        putLetterToFront(picker.dataset.letter);
+        setParams((params) => {
+          params.letterFront = picker.dataset.letter;
+        });
       });
     });
 
@@ -428,9 +458,35 @@
     });
 
     document.getElementById("opacity-slider").addEventListener("input", (event) => {
-      console.log(event);
-      root.style.setProperty("--letter-opacity", event.target.value / 100);
+      const value = event.target.value / 100;
+      setOpacity(value);
+
+      setParams((params) => {
+        params.opacity = value;
+      });
     });
+
+    (() => {
+      const params = getParams();
+
+      if (!params) {
+        return;
+      }
+
+      Object.entries(params).filter(([key, value]) => key.startsWith("color-")).forEach(([key, value]) => {
+        const letter = key.split("-")[1];
+        setLetterColor(letter, value);
+        document.querySelector(`input[name="color"][data-letter="${letter}"]`).value = value;
+      });
+
+      if (params.letterFront) {
+        putLetterToFront(params.letterFront)
+      }
+
+      if (params.opacity) {
+        setOpacity(params.opacity);
+      }
+    })();
 
   </script>
 </body>
