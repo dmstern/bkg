@@ -101,17 +101,20 @@
       padding: 5px;
     }
 
-    .print-button {
+    button {
       margin: 1rem 0;
       padding: .5em;
       background-color: transparent;
       border-radius: 6px;
       border: 2px solid var(--button-highlight);
       font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .print-button:hover,
-    .print-button:active {
+    button:hover,
+    button:active {
       color: white;
       background-color: var(--button-highlight);
     }
@@ -394,6 +397,15 @@
             d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
             stroke-linecap="round" stroke-linejoin="round"></path>
         </svg><span>Als PDF Herunterladen <br>(als Drucker "PDF" oder "in Datei drucken" auswählen)</span></button>
+      <button class="share-button" id="share-button">
+        <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+            stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Teilen</span>
+      </button>
     </div>
   </main>
 
@@ -455,6 +467,11 @@
 
     document.getElementById("print-button").addEventListener("click", () => {
       window.print();
+    });
+    
+    document.getElementById("share-button").addEventListener("click", () => {
+      navigator.clipboard.writeText(location.href);
+      window.alert("URL in Zwischenablage kopiert. Du kannst sie jetzt jemandem schicken.");
     });
 
     document.getElementById("opacity-slider").addEventListener("input", (event) => {
